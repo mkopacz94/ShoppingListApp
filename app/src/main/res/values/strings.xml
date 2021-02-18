@@ -3,4 +3,5 @@
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">Shopping list fragment</string>
     <string name="create_new_shopping_list">Utwórz nową <font color='#28a622'>listę zakupów</font></string>
+    <string name="add_new_item">Wpisz nazwę produktu...</string>
 </resources>
