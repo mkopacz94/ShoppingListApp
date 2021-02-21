@@ -4,4 +4,8 @@
     <string name="first_fragment_label">Shopping list fragment</string>
     <string name="create_new_shopping_list">Utwórz nową <font color='#28a622'>listę zakupów</font></string>
     <string name="add_new_item">Wpisz nazwę produktu...</string>
+    <string name="delete_all_alert_title">Potwierdź</string>
+    <string name="delete_all_alert_message">Czy na pewno chcesz wyczyścić listę zakupów?</string>
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
 </resources>
