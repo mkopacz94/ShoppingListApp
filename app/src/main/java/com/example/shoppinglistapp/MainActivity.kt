@@ -2,14 +2,11 @@ package com.example.shoppinglistapp
 
 import android.app.AlertDialog
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
-import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.example.shoppinglistapp.Application.ShoppingListApplication
@@ -28,12 +25,25 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.toolbar))
 
         supportActionBar?.setBackgroundDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.toolbar_gradient));
-
-        val deleteAllButton = findViewById<FloatingActionButton>(R.id.deleteAllButton)
-        deleteAllButton.setOnClickListener(deleteAllClickListener)
     }
 
-    private val deleteAllClickListener = View.OnClickListener { _ ->
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.list_toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        return when (item.itemId) {
+            R.id.actionClearAll -> {
+                deleteAllItems()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun deleteAllItems() {
         val dialogBuilder = AlertDialog.Builder(this)
         dialogBuilder.setTitle(getString(R.string.delete_all_alert_title))
         dialogBuilder.setMessage(getString(R.string.delete_all_alert_message))

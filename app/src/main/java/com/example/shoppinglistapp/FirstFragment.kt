@@ -1,5 +1,6 @@
 package com.example.shoppinglistapp
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
@@ -15,24 +16,38 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglistapp.Adapters.AdapterButtonsCallback
+import com.example.shoppinglistapp.Adapters.ItemUsedAdapterButtonsCallback
+import com.example.shoppinglistapp.Adapters.ItemsUsedListAdapter
 import com.example.shoppinglistapp.Adapters.ShoppingListAdapter
 import com.example.shoppinglistapp.Application.ShoppingListApplication
+import com.example.shoppinglistapp.Data.Entities.ItemUsed
 import com.example.shoppinglistapp.Data.Entities.ShoppingItem
+import com.example.shoppinglistapp.Data.ViewModels.ItemUsedViewModel
+import com.example.shoppinglistapp.Data.ViewModels.ItemUsedViewModelFactory
 import com.example.shoppinglistapp.Data.ViewModels.ShoppingItemViewModel
 import com.example.shoppinglistapp.Data.ViewModels.ShoppingItemViewModelFactory
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FirstFragment : Fragment(), AdapterButtonsCallback {
+class FirstFragment : Fragment(), AdapterButtonsCallback, ItemUsedAdapterButtonsCallback {
 
     private val shoppingItemViewModel: ShoppingItemViewModel by viewModels {
         ShoppingItemViewModelFactory((requireActivity().application as ShoppingListApplication).repository)
     }
 
+    private val itemUsedViewModel: ItemUsedViewModel by viewModels {
+        ItemUsedViewModelFactory((requireActivity().application as ShoppingListApplication).itemUsedRepository)
+    }
+
     private lateinit var itemEditText: EditText
     private lateinit var itemsList: RecyclerView
     private val shoppingListAdapter = ShoppingListAdapter(emptyList(), this)
+
+    private lateinit var usedItemsList: List<ItemUsed>
+    private lateinit var usedItemsRecyclerView: RecyclerView
+    private val usedItemsListAdapter = ItemsUsedListAdapter(emptyList(), this)
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -42,7 +57,7 @@ class FirstFragment : Fragment(), AdapterButtonsCallback {
         val view = inflater.inflate(R.layout.fragment_first, container, false)
 
         itemEditText = view.findViewById(R.id.itemEditText)
-        itemEditText.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+        itemEditText.setOnKeyListener(View.OnKeyListener { _, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 addFromTextInput()
                 return@OnKeyListener true
@@ -54,6 +69,14 @@ class FirstFragment : Fragment(), AdapterButtonsCallback {
 
         shoppingItemViewModel.allItems.observe(viewLifecycleOwner, Observer { items ->
             refreshItemsList(items)
+        })
+
+        usedItemsRecyclerView = view.findViewById(R.id.usedItemsList)
+        initializeUsedItemsList()
+
+        itemUsedViewModel.allUsedItems.observe(viewLifecycleOwner, Observer { itemsUsed ->
+            usedItemsList = itemsUsed
+            refreshUsedItemsList(itemsUsed)
         })
 
         view.findViewById<ImageButton>(R.id.addItemButton)
@@ -70,9 +93,33 @@ class FirstFragment : Fragment(), AdapterButtonsCallback {
         }
     }
 
+    private fun initializeUsedItemsList() {
+
+        val usedItemsLayoutManager = LinearLayoutManager(activity)
+        usedItemsLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
+
+        usedItemsRecyclerView.apply {
+            layoutManager = usedItemsLayoutManager
+            adapter = usedItemsListAdapter
+        }
+    }
+
     private fun refreshItemsList(shoppingItems: List<ShoppingItem>) {
 
         shoppingListAdapter.update(shoppingItems)
+    }
+
+    private fun refreshUsedItemsList(usedItems: List<ItemUsed>) {
+
+        if(usedItemsList.count() >= 10) {
+            usedItemsListAdapter.update(usedItems
+                    .sortedByDescending { i -> i.timesUsed }
+                    .subList(0, 10))
+        } else
+        {
+            usedItemsListAdapter.update(usedItems
+                    .sortedByDescending { i -> i.timesUsed })
+        }
     }
 
     private val addItemClickListener = View.OnClickListener { _ ->
@@ -81,9 +128,29 @@ class FirstFragment : Fragment(), AdapterButtonsCallback {
 
     private fun addFromTextInput() {
         if(!itemEditText.text.isNullOrEmpty()) {
-            val itemToAdd = ShoppingItem(0, itemEditText.text.toString(), false)
-            shoppingItemViewModel.insertItem(itemToAdd)
+            addItemToList(itemEditText.text.toString())
             itemEditText.text.clear()
+        }
+    }
+
+    private fun addItemToList(itemName: String) {
+        val itemToAdd = ShoppingItem(0, itemName, false)
+        shoppingItemViewModel.insertItem(itemToAdd)
+        addToUsedItems(itemToAdd.item)
+    }
+
+    private fun addToUsedItems(itemName: String) {
+        val itemToUpdate = usedItemsList.firstOrNull { i ->
+            i.item.toLowerCase() == itemName.toLowerCase()
+        }
+
+        if(itemToUpdate == null)
+        {
+            val itemToInsert = ItemUsed(0, itemName.toLowerCase(), 1)
+            itemUsedViewModel.insertItem(itemToInsert)
+        } else {
+            itemToUpdate.timesUsed += 1
+            itemUsedViewModel.updateItem(itemToUpdate)
         }
     }
 
@@ -94,5 +161,9 @@ class FirstFragment : Fragment(), AdapterButtonsCallback {
     override fun checkboxClickCallback(itemModel: ShoppingItem, checked: Boolean) {
         itemModel.bought = checked
         shoppingItemViewModel.updateItem(itemModel)
+    }
+
+    override fun usedItemClicked(usedItemModel: ItemUsed) {
+        addItemToList(usedItemModel.item.capitalize())
     }
 }

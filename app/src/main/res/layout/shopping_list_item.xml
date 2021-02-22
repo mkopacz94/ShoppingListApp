@@ -14,7 +14,7 @@
         android:fontFamily="sans-serif"
         android:paddingLeft="8dp"
         android:text="shoppingItemName"
-        android:textColor="@android:color/primary_text_light"
+        android:textColor="@color/dark_gray"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/deleteItemButton"

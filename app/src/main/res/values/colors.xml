@@ -12,4 +12,7 @@
     <color name="green_gradient_start">#28a622</color>
     <color name="green_gradient_end">#82c739</color>
     <color name="red">#e13b3b</color>
+    <color name="gray">#999999</color>
+    <color name="dark_gray">#6a6a6a</color>
+    <color name="light_gray">#dddddd</color>
 </resources>
