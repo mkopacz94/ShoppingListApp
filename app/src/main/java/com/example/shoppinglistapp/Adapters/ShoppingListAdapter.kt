@@ -22,6 +22,7 @@ interface AdapterButtonsCallback {
     fun checkboxClickCallback(itemModel: ShoppingItem, checked: Boolean)
     fun itemNameUpdatedCallback(itemModel: ShoppingItem, newName: String)
     fun emptyItemAlertCallback()
+    fun hideKeyboard()
 }
 
 class ShoppingListAdapter(private var shoppingList: List<ShoppingItem>,
@@ -69,17 +70,16 @@ class ShoppingListAdapter(private var shoppingList: List<ShoppingItem>,
             adapterButtonsCallback.checkboxClickCallback(
                 shoppingList[position],
                 (it as CheckBox).isChecked)
+            adapterButtonsCallback.hideKeyboard()
         }
         viewHolder.editItemButton.setOnClickListener {
             viewHolder.itemLayout.visibility = View.GONE
             viewHolder.editItemLayout.visibility = View.VISIBLE
             viewHolder.itemEditText.setText(viewHolder.itemCheckBox.text)
-            viewHolder.itemEditText.requestFocus()
-            viewHolder.itemEditText.setSelection(viewHolder.itemEditText.text.length)
-            viewHolder.itemEditText.performClick()
         }
         viewHolder.deleteItemButton.setOnClickListener {
             adapterButtonsCallback.deleteItemOnClickCallback(shoppingList[position])
+            adapterButtonsCallback.hideKeyboard()
         }
         viewHolder.acceptEditButton.setOnClickListener {
             tryToUpdateItemName(
@@ -102,6 +102,7 @@ class ShoppingListAdapter(private var shoppingList: List<ShoppingItem>,
         viewHolder.cancelEditButton.setOnClickListener {
             viewHolder.itemLayout.visibility = View.VISIBLE
             viewHolder.editItemLayout.visibility = View.GONE
+            adapterButtonsCallback.hideKeyboard()
         }
     }
 
@@ -121,6 +122,7 @@ class ShoppingListAdapter(private var shoppingList: List<ShoppingItem>,
                 viewHolder.itemEditText.text.toString())
             viewHolder.itemLayout.visibility = View.VISIBLE
             viewHolder.editItemLayout.visibility = View.GONE
+            adapterButtonsCallback.hideKeyboard()
         }
     }
 

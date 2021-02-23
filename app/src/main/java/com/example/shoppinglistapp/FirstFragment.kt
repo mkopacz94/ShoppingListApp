@@ -1,6 +1,7 @@
 package com.example.shoppinglistapp
 
 import android.app.AlertDialog
+import android.content.Context
 import android.media.Image
 import android.os.Bundle
 import android.view.KeyEvent
@@ -8,7 +9,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -197,7 +200,13 @@ class FirstFragment : Fragment(), AdapterButtonsCallback, ItemUsedAdapterButtons
         dialogBuilder.show()
     }
 
+    override fun hideKeyboard() {
+        val inputMethodManager = getSystemService(requireContext(), InputMethodManager::class.java)
+        inputMethodManager?.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
     override fun usedItemClicked(usedItemModel: ItemUsed) {
         addItemToList(usedItemModel.item.capitalize())
+        hideKeyboard()
     }
 }
