@@ -1,17 +1,27 @@
 package com.example.shoppinglistapp.Adapters
 
+import android.os.Build
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.ImageButton
+import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglistapp.Data.Entities.ShoppingItem
 import com.example.shoppinglistapp.R
 
+
 interface AdapterButtonsCallback {
     fun deleteItemOnClickCallback(itemModel: ShoppingItem)
     fun checkboxClickCallback(itemModel: ShoppingItem, checked: Boolean)
+    fun itemNameUpdatedCallback(itemModel: ShoppingItem, newName: String)
+    fun emptyItemAlertCallback()
 }
 
 class ShoppingListAdapter(private var shoppingList: List<ShoppingItem>,
@@ -23,8 +33,15 @@ class ShoppingListAdapter(private var shoppingList: List<ShoppingItem>,
      * (custom ViewHolder).
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val itemLayout: ConstraintLayout = view.findViewById(R.id.itemLayout)
         val itemCheckBox: CheckBox = view.findViewById(R.id.itemCheckbox)
+        val editItemButton: ImageButton = view.findViewById(R.id.editItemButton)
         val deleteItemButton: ImageButton = view.findViewById(R.id.deleteItemButton)
+
+        val editItemLayout: ConstraintLayout = view.findViewById(R.id.editItemLayout)
+        val itemEditText: EditText = view.findViewById(R.id.itemEditText)
+        val acceptEditButton: ImageButton = view.findViewById(R.id.acceptEditButton)
+        val cancelEditButton: ImageButton = view.findViewById(R.id.cancelEditButton)
     }
 
     // Create new views (invoked by the layout manager)
@@ -37,10 +54,15 @@ class ShoppingListAdapter(private var shoppingList: List<ShoppingItem>,
     }
 
     // Replace the contents of a view (invoked by the layout manager)
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
+
+        viewHolder.itemLayout.visibility = View.VISIBLE
+        viewHolder.editItemLayout.visibility = View.GONE
+
         viewHolder.itemCheckBox.text = shoppingList[position].item
         viewHolder.itemCheckBox.isChecked = shoppingList[position].bought
         viewHolder.itemCheckBox.setOnClickListener {
@@ -48,8 +70,38 @@ class ShoppingListAdapter(private var shoppingList: List<ShoppingItem>,
                 shoppingList[position],
                 (it as CheckBox).isChecked)
         }
+        viewHolder.editItemButton.setOnClickListener {
+            viewHolder.itemLayout.visibility = View.GONE
+            viewHolder.editItemLayout.visibility = View.VISIBLE
+            viewHolder.itemEditText.setText(viewHolder.itemCheckBox.text)
+            viewHolder.itemEditText.requestFocus()
+            viewHolder.itemEditText.setSelection(viewHolder.itemEditText.text.length)
+            viewHolder.itemEditText.performClick()
+        }
         viewHolder.deleteItemButton.setOnClickListener {
             adapterButtonsCallback.deleteItemOnClickCallback(shoppingList[position])
+        }
+        viewHolder.acceptEditButton.setOnClickListener {
+            tryToUpdateItemName(
+                viewHolder.itemEditText.text.toString(),
+                position,
+                viewHolder
+            )
+        }
+        viewHolder.itemEditText.setOnKeyListener(View.OnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                tryToUpdateItemName(
+                    viewHolder.itemEditText.text.toString(),
+                    position,
+                    viewHolder
+                )
+                return@OnKeyListener true
+            }
+            false
+        })
+        viewHolder.cancelEditButton.setOnClickListener {
+            viewHolder.itemLayout.visibility = View.VISIBLE
+            viewHolder.editItemLayout.visibility = View.GONE
         }
     }
 
@@ -60,4 +112,16 @@ class ShoppingListAdapter(private var shoppingList: List<ShoppingItem>,
         shoppingList = newList
         notifyDataSetChanged()
     }
+
+    private fun tryToUpdateItemName(newName: String, position: Int, viewHolder: ViewHolder) {
+        if(newName.isNullOrEmpty()) {
+            adapterButtonsCallback.emptyItemAlertCallback()
+        } else {
+            adapterButtonsCallback.itemNameUpdatedCallback(shoppingList[position],
+                viewHolder.itemEditText.text.toString())
+            viewHolder.itemLayout.visibility = View.VISIBLE
+            viewHolder.editItemLayout.visibility = View.GONE
+        }
+    }
+
 }

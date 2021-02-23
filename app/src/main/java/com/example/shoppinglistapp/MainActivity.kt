@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.example.shoppinglistapp.Application.ShoppingListApplication
+import com.example.shoppinglistapp.Data.ViewModels.ItemUsedViewModel
+import com.example.shoppinglistapp.Data.ViewModels.ItemUsedViewModelFactory
 import com.example.shoppinglistapp.Data.ViewModels.ShoppingItemViewModel
 import com.example.shoppinglistapp.Data.ViewModels.ShoppingItemViewModelFactory
 
@@ -17,6 +19,10 @@ class MainActivity : AppCompatActivity() {
 
     private val shoppingItemViewModel: ShoppingItemViewModel by viewModels {
         ShoppingItemViewModelFactory((this.application as ShoppingListApplication).repository)
+    }
+
+    private val itemUsedViewModel: ItemUsedViewModel by viewModels {
+        ItemUsedViewModelFactory((this.application as ShoppingListApplication).itemUsedRepository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +45,10 @@ class MainActivity : AppCompatActivity() {
                 deleteAllItems()
                 true
             }
+            R.id.actionClearMostOften -> {
+                deleteMostOftenItems()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -49,6 +59,18 @@ class MainActivity : AppCompatActivity() {
         dialogBuilder.setMessage(getString(R.string.delete_all_alert_message))
         dialogBuilder.setPositiveButton(R.string.yes) { _, _ ->
             shoppingItemViewModel.deleteAll()
+        }
+        dialogBuilder.setNegativeButton(R.string.no) { _,_ -> }
+        dialogBuilder.create()
+        dialogBuilder.show()
+    }
+
+    private fun deleteMostOftenItems() {
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setTitle(getString(R.string.delete_most_often_alert_title))
+        dialogBuilder.setMessage(getString(R.string.delete_most_often_alert_message))
+        dialogBuilder.setPositiveButton(R.string.yes) { _, _ ->
+            itemUsedViewModel.deleteAll()
         }
         dialogBuilder.setNegativeButton(R.string.no) { _,_ -> }
         dialogBuilder.create()

@@ -8,6 +8,12 @@
     <string name="delete_all_alert_message">Czy na pewno chcesz wyczyścić listę zakupów?</string>
     <string name="yes">Tak</string>
     <string name="no">Nie</string>
+    <string name="ok">Ok</string>
     <string name="most_often_added">Najczęściej dodawane</string>
     <string name="clear_list">Wyczyść listę</string>
+    <string name="clear_most_often_list">Wyczyść najczęściej dodawne</string>
+    <string name="delete_most_often_alert_title">Potwierdź</string>
+    <string name="delete_most_often_alert_message">Czy na pewno chcesz wyczyścić listę najczęściej dodawnych artykułów?</string>
+    <string name="empty_item_alert_title">Pusty wpis</string>
+    <string name="empty_item_alert_message">Nowa nazwa artykułu nie może pozostać pusta</string>
 </resources>

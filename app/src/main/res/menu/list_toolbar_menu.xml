@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- Settings, should always be in the overflow -->
-    <item android:id="@+id/actionClearAll"
-        android:title="@string/clear_list"/>
+    <item
+        android:id="@+id/actionClearAll"
+        android:icon="@drawable/ic_baseline_delete_forever_48"
+        app:showAsAction="ifRoom"
+        android:title="@string/clear_list" />
+    <item android:id="@+id/actionClearMostOften"
+        android:title="@string/clear_most_often_list"/>
 </menu>
