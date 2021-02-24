@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Lista zakupów</string>
-    <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">Shopping list fragment</string>
     <string name="create_new_shopping_list">Utwórz nową <font color='#28a622'>listę zakupów</font></string>
     <string name="add_new_item">Wpisz nazwę produktu...</string>
@@ -16,4 +15,7 @@
     <string name="delete_most_often_alert_message">Czy na pewno chcesz wyczyścić listę najczęściej dodawnych artykułów?</string>
     <string name="empty_item_alert_title">Pusty wpis</string>
     <string name="empty_item_alert_message">Nowa nazwa artykułu nie może pozostać pusta</string>
+    <string name="share_list">Udostępnij listę</string>
+    <string name="empty_list_alert_title">Lista jest pusta</string>
+    <string name="empty_list_alert_message">Aby udostępnić swoją listę zakupów, dodaj do niej produkty.</string>
 </resources>

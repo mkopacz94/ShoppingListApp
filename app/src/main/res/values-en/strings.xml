@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Shopping list</string>
+    <string name="first_fragment_label">Shopping list fragment</string>
+    <string name="create_new_shopping_list">Create new <font color='#28a622'>shopping list</font></string>
+    <string name="add_new_item">Enter product name...</string>
+    <string name="delete_all_alert_title">Confirm</string>
+    <string name="delete_all_alert_message">Are you sure you want to clear your shopping list?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ok">Ok</string>
+    <string name="most_often_added">Frequently added</string>
+    <string name="clear_list">Clear list</string>
+    <string name="clear_most_often_list">Clear frequently added</string>
+    <string name="delete_most_often_alert_title">Confirm</string>
+    <string name="delete_most_often_alert_message">Are you sure you want to clear frequently added items list?</string>
+    <string name="empty_item_alert_title">Empty entry</string>
+    <string name="empty_item_alert_message">The new name of the article cannot be empty</string>
+    <string name="share_list">Share list</string>
+    <string name="empty_list_alert_title">List is empty</string>
+    <string name="empty_list_alert_message">Add products to the shopping list to be able to share it.</string>
+</resources>

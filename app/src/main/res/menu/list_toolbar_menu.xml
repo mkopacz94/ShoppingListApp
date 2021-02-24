@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- Settings, should always be in the overflow -->
     <item
+        android:id="@+id/actionShare"
+        android:icon="@drawable/ic_baseline_share_24"
+        app:showAsAction="ifRoom"
+        android:title="@string/share_list" />
+    <item
         android:id="@+id/actionClearAll"
         android:icon="@drawable/ic_baseline_delete_forever_48"
         app:showAsAction="ifRoom"
