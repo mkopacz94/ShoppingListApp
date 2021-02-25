@@ -1,5 +1,6 @@
 package com.example.shoppinglistapp.Adapters
 
+import android.graphics.Paint
 import android.os.Build
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -58,20 +59,19 @@ class ShoppingListAdapter(private var shoppingList: List<ShoppingItem>,
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
-
         viewHolder.itemLayout.visibility = View.VISIBLE
         viewHolder.editItemLayout.visibility = View.GONE
 
         viewHolder.itemCheckBox.text = shoppingList[position].item
-        viewHolder.itemCheckBox.isChecked = shoppingList[position].bought
-        viewHolder.itemCheckBox.setOnClickListener {
-            adapterButtonsCallback.checkboxClickCallback(
-                shoppingList[position],
-                (it as CheckBox).isChecked)
+        changeItemState(viewHolder.itemCheckBox, shoppingList[position].bought)
+
+        viewHolder.itemCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
+
+            changeItemState(buttonView as CheckBox, isChecked)
+            adapterButtonsCallback.checkboxClickCallback( shoppingList[position], isChecked)
             adapterButtonsCallback.hideKeyboard()
         }
+
         viewHolder.editItemButton.setOnClickListener {
             viewHolder.itemLayout.visibility = View.GONE
             viewHolder.editItemLayout.visibility = View.VISIBLE
@@ -112,6 +112,16 @@ class ShoppingListAdapter(private var shoppingList: List<ShoppingItem>,
     fun update(newList: List<ShoppingItem>) {
         shoppingList = newList
         notifyDataSetChanged()
+    }
+
+    private fun changeItemState(itemCheckbox: CheckBox, checked: Boolean) {
+        itemCheckbox.isChecked = checked
+
+        if(checked) {
+            itemCheckbox.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG or itemCheckbox.paintFlags
+        } else {
+            itemCheckbox.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG.inv() and itemCheckbox.paintFlags
+        }
     }
 
     private fun tryToUpdateItemName(newName: String, position: Int, viewHolder: ViewHolder) {
