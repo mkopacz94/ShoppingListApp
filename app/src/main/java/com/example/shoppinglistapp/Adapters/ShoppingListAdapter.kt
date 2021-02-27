@@ -65,10 +65,10 @@ class ShoppingListAdapter(private var shoppingList: List<ShoppingItem>,
         viewHolder.itemCheckBox.text = shoppingList[position].item
         changeItemState(viewHolder.itemCheckBox, shoppingList[position].bought)
 
-        viewHolder.itemCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
-
-            changeItemState(buttonView as CheckBox, isChecked)
-            adapterButtonsCallback.checkboxClickCallback( shoppingList[position], isChecked)
+        viewHolder.itemCheckBox.setOnClickListener {
+            adapterButtonsCallback.checkboxClickCallback(
+                    shoppingList[position],
+                    viewHolder.itemCheckBox.isChecked)
             adapterButtonsCallback.hideKeyboard()
         }
 
